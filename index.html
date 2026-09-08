@@ -27,6 +27,7 @@ h1{font-size:24px;margin:0 0 4px;letter-spacing:-.02em}
 label{display:block;font-size:12px;color:var(--dim);margin-bottom:5px}
 input,select{width:100%;background:#0e1014;border:1px solid var(--line);color:var(--txt);
   border-radius:9px;padding:11px 10px;font-size:16px;font-family:inherit}
+input::placeholder{color:#4c5468}
 input:focus,select:focus{outline:none;border-color:var(--accent)}
 .full{grid-column:1/-1}
 .terms{margin-top:14px;padding:13px;background:#0e1014;border:1px solid var(--line);border-radius:11px}
@@ -39,7 +40,9 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 .hero{text-align:center;padding:8px 0 4px}
 .hero .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim)}
 .hero .big{font-size:38px;font-weight:700;letter-spacing:-.03em;color:var(--accent);margin:6px 0 2px;line-height:1.05}
+.hero .kicker{font-size:15px;color:var(--good);font-weight:600;margin:8px 0 10px;max-width:520px;margin-left:auto;margin-right:auto}
 .hero .cap{font-size:13px;color:var(--dim);max-width:520px;margin:0 auto}
+.hero .empty{font-size:15px;color:var(--dim);padding:18px 6px}
 .versus{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}
 .versus .vs{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
 .versus .n{font-size:12px;color:var(--dim);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -82,15 +85,11 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
   <p class="sub">Money spent isn't just gone — it's the growth you never got. Compare two choices, add the financing, and follow it down to the grandkids.</p>
 
   <div class="card">
-    <h2><span class="dot dotA"></span>Purchase A</h2>
+    <h2>About You</h2>
     <div class="grid">
-      <div class="full">
-        <label>Name it</label>
-        <input id="labelA" type="text" value="New truck" maxlength="28">
-      </div>
       <div>
-        <label>Amount</label>
-        <input id="amountA" type="number" value="45000" min="0" step="any" inputmode="decimal">
+        <label>Your age today (optional)</label>
+        <input id="age" type="number" value="" min="0" max="110" step="1" inputmode="numeric" placeholder="e.g. 45">
       </div>
       <div>
         <label>Currency</label>
@@ -103,6 +102,21 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
           <option value="MXN">$ MXN</option>
           <option value="JPY">¥ JPY</option>
         </select>
+      </div>
+    </div>
+    <p class="note">Add your age and every milestone below shows how old you'd be when that money would have been waiting for you.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot dotA"></span>Purchase A</h2>
+    <div class="grid">
+      <div class="full">
+        <label>Name it</label>
+        <input id="labelA" type="text" value="" maxlength="28" placeholder="What are you buying?">
+      </div>
+      <div class="full">
+        <label>Amount</label>
+        <input id="amountA" type="number" value="0" min="0" step="any" inputmode="decimal">
       </div>
       <div class="full">
         <label>How often?</label>
@@ -129,7 +143,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
       <div class="grid three">
         <div><label>APR %</label><input id="loanAprA" type="number" value="7.5" step="any" inputmode="decimal"></div>
         <div><label>Term (months)</label><input id="loanTermMoA" type="number" value="72" step="1" inputmode="numeric"></div>
-        <div><label>Down payment</label><input id="downA" type="number" value="5000" step="any" inputmode="decimal"></div>
+        <div><label>Down payment</label><input id="downA" type="number" value="0" step="any" inputmode="decimal"></div>
       </div>
     </div>
 
@@ -151,11 +165,11 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
       <div class="grid">
         <div class="full">
           <label>Name it</label>
-          <input id="labelB" type="text" value="Used truck" maxlength="28">
+          <input id="labelB" type="text" value="" maxlength="28" placeholder="The other option">
         </div>
         <div class="full">
           <label>Amount</label>
-          <input id="amountB" type="number" value="22000" min="0" step="any" inputmode="decimal">
+          <input id="amountB" type="number" value="0" min="0" step="any" inputmode="decimal">
         </div>
         <div class="full">
           <label>How often?</label>
@@ -182,7 +196,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
         <div class="grid three">
           <div><label>APR %</label><input id="loanAprB" type="number" value="9.5" step="any" inputmode="decimal"></div>
           <div><label>Term (months)</label><input id="loanTermMoB" type="number" value="48" step="1" inputmode="numeric"></div>
-          <div><label>Down payment</label><input id="downB" type="number" value="3000" step="any" inputmode="decimal"></div>
+          <div><label>Down payment</label><input id="downB" type="number" value="0" step="any" inputmode="decimal"></div>
         </div>
       </div>
 
@@ -211,7 +225,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     <label class="toggle"><input id="useLegacy" type="checkbox"><span>The family keeps feeding the fund</span></label>
     <div id="legacyFields" style="display:none;margin-top:16px">
       <div class="grid">
-        <div><label>Contribution</label><input id="legAmt" type="number" value="100" min="0" step="any" inputmode="decimal"></div>
+        <div><label>Contribution</label><input id="legAmt" type="number" value="0" min="0" step="any" inputmode="decimal"></div>
         <div>
           <label>How often</label>
           <select id="legFreq"><option value="12">Per month</option><option value="1">Per year</option></select>
@@ -270,6 +284,14 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     return String(s).replace(/[&<>"]/g,function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
     });
+  }
+
+  function horizonNote(years, desc, age){
+    if(age > 0){
+      var a = age + years;
+      if(a <= 95) return "you'd be " + a;
+    }
+    return desc;
   }
 
   function cardSchedule(balance, apr, minPct, minFloor, fixedPay){
@@ -383,8 +405,9 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
   }
 
   function readPurchase(sfx){
+    var nm = el("label"+sfx).value.trim();
     return {
-      label: (el("label"+sfx).value || ("Purchase "+sfx)),
+      label: nm || ("Purchase "+sfx),
       amount: num("amount"+sfx),
       freq: parseFloat(el("freq"+sfx).value),
       method: el("method"+sfx).value,
@@ -404,6 +427,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
   function render(){
     setFmt(el("currency").value);
     var rate = num("rate")/100, infl = num("infl")/100;
+    var age = num("age");
     var compare = el("useCompare").checked;
     var legacyOn = el("useLegacy").checked;
 
@@ -431,27 +455,35 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     } else { fs.style.display = "none"; }
 
     var a40 = sA.rows[3];
+    var atAge = (age > 0 && age + 40 <= 110) ? (" — you'd be " + (age + 40)) : "";
     var hero = "";
-    if(compare && sB){
+
+    if(A.amount <= 0 && (!B || B.amount <= 0)){
+      hero = '<div class="empty">Enter an amount above and the true cost appears here.</div>';
+    } else if(compare && sB){
       var b40 = sB.rows[3];
       var gap = Math.abs(a40.shown - b40.shown);
       var cheaper = a40.shown <= b40.shown ? A.label : B.label;
-      hero += '<div class="lbl">40-year true cost, side by side</div>';
+      hero += '<div class="lbl">40-year true cost, side by side'+atAge+'</div>';
       hero += '<div class="versus" style="margin:14px 0 10px">'+
         '<div><div class="n">'+esc(A.label)+'</div><div class="v va">'+fmt(a40.shown)+'</div></div>'+
         '<div class="vs">vs</div>'+
         '<div><div class="n">'+esc(B.label)+'</div><div class="v vb">'+fmt(b40.shown)+'</div></div>'+
         '</div>';
-      hero += '<div class="cap">Choosing <b>'+esc(cheaper)+'</b> leaves <b style="color:var(--good)">'+
-        fmt(gap)+'</b> more on the table after 40 years — that gap is the real price difference, not the sticker.</div>';
+      hero += '<div class="kicker">This is what each choice takes off your table. Picking '+
+        esc(cheaper)+' leaves '+fmt(gap)+' more of it standing.</div>';
+      hero += '<div class="cap">That gap is the real price difference between them — not the sticker.</div>';
     } else {
-      hero += '<div class="lbl">Real cost after 40 years</div>';
+      hero += '<div class="lbl">Real cost after 40 years'+atAge+'</div>';
       hero += '<div class="big">'+fmt(a40.shown)+'</div>';
+      hero += '<div class="kicker">This is what you would have instead' +
+        (age > 0 && age + 40 <= 110 ? ' by age ' + (age + 40) : ' in 40 years') +
+        ' if you don\u2019t make this purchase.</div>';
       hero += '<div class="cap">'+(sA.oneTime ? "That " : "Those ")+fmt(A.amount)+
         (sA.oneTime ? " purchase" : " purchases")+
         (sA.sched && !sA.sched.never ? (sA.sched.kind === "loan" ? " financed" : " on the card") : "")+
-        " gives up "+fmt(a40.shown)+" of future money — about "+a40.mult.toFixed(1)+
-        "\u00d7 what you actually handed over ("+fmt(a40.base)+").</div>";
+        " costs about "+a40.mult.toFixed(1)+
+        "\u00d7 what you actually hand over ("+fmt(a40.base)+").</div>";
     }
     el("hero").innerHTML = hero;
 
@@ -463,7 +495,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     HORIZONS.forEach(function(h,i){
       var ra = sA.rows[i], rb = sB ? sB.rows[i] : null;
       html += '<div class="row">';
-      html += '<div class="yrs">'+h[0]+' years<small>'+h[1]+'</small></div>';
+      html += '<div class="yrs">'+h[0]+' years<small>'+horizonNote(h[0], h[1], age)+'</small></div>';
 
       [[A,ra,"dotA","barA"], B ? [B,rb,"dotB","barB"] : null].forEach(function(pair){
         if(!pair) return;
@@ -483,7 +515,6 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
                   '<span class="'+(pen>=0?'red':'green')+'">'+
                   (pen>=0?'Financing penalty':'Financing advantage')+
                   ' <b>'+fmt(Math.abs(pen))+'</b></span>';
-
         }
         html += '</div>';
       });
@@ -508,7 +539,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     el("rows").innerHTML = html;
   }
 
-  ["labelA","amountA","currency","freqA","methodA","loanAprA","loanTermMoA","downA",
+  ["age","labelA","amountA","currency","freqA","methodA","loanAprA","loanTermMoA","downA",
    "aprA","minPctA","minFloorA","fixedPayA",
    "useCompare","labelB","amountB","freqB","methodB","loanAprB","loanTermMoB","downB",
    "aprB","minPctB","minFloorB","fixedPayB",
