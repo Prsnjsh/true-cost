@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>True Cost Calculator</title>
+<style>
+:root{
+  --bg:#0e1014; --card:#171a21; --line:#272c38; --txt:#e9ecf3;
+  --dim:#8b93a7; --accent:#f5a524; --blue:#60a5fa; --bad:#f87171; --good:#4ade80;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.45; padding:18px 14px 60px;
+}
+.wrap{max-width:780px;margin:0 auto}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--dim);font-size:14px;margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);margin:0 0 14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dotA{background:var(--accent)} .dotB{background:var(--blue)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:520px){.grid.three{grid-template-columns:1fr 1fr}}
+label{display:block;font-size:12px;color:var(--dim);margin-bottom:5px}
+input,select{
+  width:100%;background:#0e1014;border:1px solid var(--line);color:var(--txt);
+  border-radius:9px;padding:11px 10px;font-size:16px;font-family:inherit;
+}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.full{grid-column:1/-1}
+.toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;margin-top:12px}
+.toggle input{width:auto;transform:scale(1.3);margin:0;flex:none}
+.toggle span{font-size:15px;color:var(--txt)}
+.note{font-size:12px;color:var(--dim);margin-top:10px}
+.hero{text-align:center;padding:8px 0 4px}
+.hero .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim)}
+.hero .big{font-size:38px;font-weight:700;letter-spacing:-.03em;color:var(--accent);margin:6px 0 2px;line-height:1.05}
+.hero .big.blue{color:var(--blue)}
+.hero .cap{font-size:13px;color:var(--dim);max-width:520px;margin:0 auto}
+.versus{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}
+.versus .vs{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.versus .n{font-size:12px;color:var(--dim);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.versus .v{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.va{color:var(--accent)} .vb{color:var(--blue)}
+.row{padding:14px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:none}
+.yrs{font-size:15px;font-weight:600;margin-bottom:9px}
+.yrs small{font-weight:400;font-size:12px;color:var(--dim);margin-left:7px}
+.line{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:7px}
+.line .nm{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:7px;min-width:0}
+.line .nm b{color:var(--txt);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.line .amt{font-size:19px;font-weight:700;letter-spacing:-.02em;text-align:right;white-space:nowrap}
+.line .amt small{display:block;font-size:11px;font-weight:400;color:var(--dim);letter-spacing:0}
+.bar{height:6px;background:#0e1014;border-radius:4px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px}
+.barA i{background:linear-gradient(90deg,#f5a524,#f87171)}
+.barB i{background:linear-gradient(90deg,#60a5fa,#a78bfa)}
+.meta{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:8px;font-size:12px;color:var(--dim)}
+.meta b{color:var(--txt);font-weight:600}
+.diff{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);font-size:13px;color:var(--dim)}
+.diff b{color:var(--good);font-weight:700}
+.legacy{margin-top:11px;padding:10px;background:#0e1014;border:1px solid var(--line);border-radius:9px;font-size:13px;color:var(--dim)}
+.legacy b{color:var(--good);font-weight:700;font-size:16px}
+.pill{display:inline-block;background:#0e1014;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;color:var(--dim)}
+.warn{background:#2a1a1a;border:1px solid #5a2a2a;color:#ffb4b4;font-size:13px;padding:11px;border-radius:9px;margin-top:12px}
+.stat{background:#0e1014;border:1px solid var(--line);border-radius:10px;padding:11px}
+.stat .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.stat .v{font-size:18px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
+.sechead{font-size:12px;color:var(--dim);margin:14px 0 8px;display:flex;align-items:center;gap:7px}
+.red{color:var(--bad)} .green{color:var(--good)}
+footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>What This Purchase Really Costs</h1>
+  <p class="sub">Money spent isn't just gone — it's the growth you never got. Compare two choices, add the credit card, and follow it down to the grandkids.</p>
+
+  <div class="card">
+    <h2><span class="dot dotA"></span>Purchase A</h2>
+    <div class="grid">
+      <div class="full">
+        <label>Name it</label>
+        <input id="labelA" type="text" value="New truck" maxlength="28">
+      </div>
+      <div>
+        <label>Amount</label>
+        <input id="amountA" type="number" value="1000" min="0" step="any" inputmode="decimal">
+      </div>
+      <div>
+        <label>Currency</label>
+        <select id="currency">
+          <option value="USD">$ USD</option>
+          <option value="CAD">$ CAD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option>
+          <option value="AUD">$ AUD</option>
+          <option value="MXN">$ MXN</option>
+          <option value="JPY">¥ JPY</option>
+        </select>
+      </div>
+      <div class="full">
+        <label>How often?</label>
+        <select id="freqA">
+          <option value="0">One time only</option>
+          <option value="365">Every day (coffee, lunch)</option>
+          <option value="52">Every week</option>
+          <option value="12">Every month (subscription, payment)</option>
+          <option value="1">Every year</option>
+        </select>
+      </div>
+    </div>
+    <label class="toggle"><input id="cardA" type="checkbox"><span>Put this on a credit card</span></label>
+  </div>
+
+  <div class="card">
+    <label class="toggle" style="margin-top:0"><input id="useCompare" type="checkbox"><span>Compare against a second choice</span></label>
+    <div id="bWrap" style="display:none;margin-top:16px">
+      <h2><span class="dot dotB"></span>Purchase B</h2>
+      <div class="grid">
+        <div class="full">
+          <label>Name it</label>
+          <input id="labelB" type="text" value="Used truck" maxlength="28">
+        </div>
+        <div class="full">
+          <label>Amount</label>
+          <input id="amountB" type="number" value="400" min="0" step="any" inputmode="decimal">
+        </div>
+        <div class="full">
+          <label>How often?</label>
+          <select id="freqB">
+            <option value="0">One time only</option>
+            <option value="365">Every day (coffee, lunch)</option>
+            <option value="52">Every week</option>
+            <option value="12">Every month (subscription, payment)</option>
+            <option value="1">Every year</option>
+          </select>
+        </div>
+      </div>
+      <label class="toggle"><input id="cardB" type="checkbox"><span>Put this on a credit card</span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Investment Assumptions</h2>
+    <div class="grid">
+      <div>
+        <label>Annual return %</label>
+        <input id="rate" type="number" value="8" step="any" inputmode="decimal">
+      </div>
+      <div>
+        <label>Inflation %</label>
+        <input id="infl" type="number" value="3" step="any" inputmode="decimal">
+      </div>
+    </div>
+    <p class="note">8% is a common long-run stock-market average before inflation. Inflation converts the result back into today's buying power.</p>
+  </div>
+
+  <div class="card" id="cardTerms" style="display:none">
+    <h2>Credit Card Terms</h2>
+    <div class="grid three">
+      <div>
+        <label>APR %</label>
+        <input id="apr" type="number" value="24.99" step="any" inputmode="decimal">
+      </div>
+      <div>
+        <label>Min payment %</label>
+        <input id="minPct" type="number" value="2" step="any" inputmode="decimal">
+      </div>
+      <div>
+        <label>Min floor</label>
+        <input id="minFloor" type="number" value="25" step="any" inputmode="decimal">
+      </div>
+      <div class="full">
+        <label>Or a fixed monthly payment (0 = pay only the minimum)</label>
+        <input id="fixedPay" type="number" value="0" step="any" inputmode="decimal">
+      </div>
+    </div>
+    <p class="note">Applies to one-time purchases only. Each payment is tracked month by month, then valued as if you'd invested it instead.</p>
+  </div>
+
+  <div class="card">
+    <label class="toggle" style="margin-top:0"><input id="useLegacy" type="checkbox"><span>The family keeps feeding the fund</span></label>
+    <div id="legacyFields" style="display:none;margin-top:16px">
+      <div class="grid">
+        <div>
+          <label>Contribution</label>
+          <input id="legAmt" type="number" value="100" min="0" step="any" inputmode="decimal">
+        </div>
+        <div>
+          <label>How often</label>
+          <select id="legFreq">
+            <option value="12">Per month</option>
+            <option value="1">Per year</option>
+          </select>
+        </div>
+        <div>
+          <label>Starts in year</label>
+          <input id="legStart" type="number" value="0" min="0" step="1" inputmode="numeric">
+        </div>
+        <div>
+          <label>Stops in year</label>
+          <input id="legEnd" type="number" value="100" min="0" step="1" inputmode="numeric">
+        </div>
+      </div>
+      <p class="note">Money never spent is only half the picture. This shows what the pot becomes if you — then your kids, then theirs — keep adding to it instead of starting over each generation.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="hero" id="hero"></div>
+  </div>
+
+  <div class="card" id="cardStats" style="display:none">
+    <h2>The Cost Of Financing It</h2>
+    <div id="cardStatsBody"></div>
+  </div>
+
+  <div class="card">
+    <h2>Across The Generations</h2>
+    <div id="rows"></div>
+  </div>
+
+  <footer>
+    <span class="pill">Estimates only</span>
+    Growth is compounded at the rate you enter, with no taxes, fees, or market swings factored in. Recurring purchases assume you'd have invested each one on the day you spent it. Real life is messier than any spreadsheet — this is a thinking tool, not financial advice.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var HORIZONS = [
+    [10, "a decade from now"],
+    [20, "two decades"],
+    [30, "around retirement"],
+    [40, "a full working career"],
+    [50, "your later years"],
+    [60, "what your children inherit"],
+    [75, "your grandchildren's turn"],
+    [100, "great-grandchildren"]
+  ];
+
+  function el(id){ return document.getElementById(id); }
+  function num(id){ var v = parseFloat(el(id).value); return isNaN(v) ? 0 : v; }
+
+  var fmt = function(n){ return String(n); };
+  function setFmt(cur){
+    fmt = function(n){
+      if(!isFinite(n)) return "—";
+      var d = (Math.abs(n) >= 1000 || cur === "JPY") ? 0 : 2;
+      try{
+        return new Intl.NumberFormat(undefined,{style:"currency",currency:cur,
+          maximumFractionDigits:d,minimumFractionDigits:d}).format(n);
+      }catch(e){ return n.toFixed(d); }
+    };
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];
+    });
+  }
+
+  // Month-by-month credit card payoff simulation.
+  function cardSchedule(balance, apr, minPct, minFloor, fixedPay){
+    var mr = apr/100/12, bal = balance, pays = [], guard = 0;
+    if(bal <= 0) return {pays:[], months:0, totalPaid:0, interest:0, never:false, hitCap:false};
+    while(bal > 0.005 && guard < 1200){
+      var interest = bal * mr;
+      var pay = fixedPay > 0 ? fixedPay : Math.max(bal * minPct/100, minFloor);
+      if(pay > bal + interest) pay = bal + interest;
+      if(pay <= interest + 0.0001) return {never:true, pays:[], months:0, totalPaid:0, interest:0, hitCap:false};
+      bal = bal + interest - pay;
+      pays.push(pay);
+      guard++;
+    }
+    var total = pays.reduce(function(a,b){ return a+b; }, 0);
+    return {pays:pays, months:pays.length, totalPaid:total,
+            interest:total-balance, never:false, hitCap:guard>=1200};
+  }
+
+  // Everything one purchase costs across every horizon.
+  function series(p, rate, infl, cardOpts){
+    var oneTime = (p.freq === 0);
+    var mRate = Math.pow(1+rate, 1/12) - 1;
+    var sched = null;
+    if(p.onCard && oneTime && p.amount > 0){
+      sched = cardSchedule(p.amount, cardOpts.apr, cardOpts.minPct, cardOpts.minFloor, cardOpts.fixedPay);
+    }
+    var out = [];
+    HORIZONS.forEach(function(h){
+      var years = h[0], months = years*12, spent, fv;
+      if(oneTime){
+        spent = p.amount;
+        fv = p.amount * Math.pow(1+rate, years);
+      } else {
+        var n = p.freq;
+        var rp = Math.pow(1+rate, 1/n) - 1;
+        var N = n * years;
+        spent = p.amount * N;
+        fv = (rp === 0) ? p.amount*N : p.amount * ((Math.pow(1+rp, N) - 1) / rp);
+      }
+      var cardFV = null, cardSpent = null;
+      if(sched && !sched.never){
+        var sum = 0, paid = 0;
+        for(var m = 0; m < sched.pays.length; m++){
+          var mi = m + 1;
+          if(mi > months) break;
+          paid += sched.pays[m];
+          sum += sched.pays[m] * Math.pow(1+mRate, months - mi);
+        }
+        cardFV = sum; cardSpent = paid;
+      }
+      var shown = (cardFV !== null) ? cardFV : fv;
+      var base = (cardSpent !== null) ? cardSpent : spent;
+      out.push({
+        years:years, spent:spent, fv:fv, cardFV:cardFV, cardSpent:cardSpent,
+        shown:shown, base:base, real: shown / Math.pow(1+infl, years),
+        mult: base > 0 ? shown/base : 0
+      });
+    });
+    return {rows:out, sched:sched, oneTime:oneTime};
+  }
+
+  // Future value of ongoing family contributions.
+  function legacyAt(years, rate, amt, perYear, startY, endY){
+    if(amt <= 0) return {fv:0, put:0};
+    var stop = Math.min(endY, years);
+    if(stop <= startY) return {fv:0, put:0};
+    var fv = 0, put = 0;
+    if(perYear === 12){
+      var mRate = Math.pow(1+rate, 1/12) - 1;
+      var horizonM = years*12, s = Math.floor(startY*12)+1, e = Math.floor(stop*12);
+      for(var m = s; m <= e; m++){ fv += amt * Math.pow(1+mRate, horizonM - m); put += amt; }
+    } else {
+      for(var y = Math.floor(startY)+1; y <= Math.floor(stop); y++){
+        fv += amt * Math.pow(1+rate, years - y); put += amt;
+      }
+    }
+    return {fv:fv, put:put};
+  }
+
+  function cardPanel(name, dotClass, s){
+    var h = '<div class="sechead"><span class="dot ' + dotClass + '"></span>' + esc(name) + '</div>';
+    if(s.sched.never){
+      return h + '<div class="warn">At this payment level you would never pay it off — the minimum payment is smaller than the monthly interest, so the balance only grows.</div>';
+    }
+    var yrs = Math.floor(s.sched.months/12), mos = s.sched.months % 12;
+    h += '<div class="grid three">' +
+      '<div class="stat"><div class="k">Time to pay off</div><div class="v">' + yrs + 'y ' + mos + 'm</div></div>' +
+      '<div class="stat"><div class="k">Interest paid</div><div class="v red">' + fmt(s.sched.interest) + '</div></div>' +
+      '<div class="stat"><div class="k">Total handed over</div><div class="v">' + fmt(s.sched.totalPaid) + '</div></div>' +
+      '</div>';
+    if(s.sched.hitCap) h += '<div class="warn">Payoff takes longer than 100 years at this payment level.</div>';
+    return h;
+  }
+
+  function render(){
+    var cur = el("currency").value;
+    setFmt(cur);
+    var rate = num("rate")/100, infl = num("infl")/100;
+    var compare = el("useCompare").checked;
+    var legacyOn = el("useLegacy").checked;
+
+    el("bWrap").style.display = compare ? "block" : "none";
+    el("legacyFields").style.display = legacyOn ? "block" : "none";
+
+    var A = {label: el("labelA").value || "Purchase A", amount: num("amountA"),
+             freq: parseFloat(el("freqA").value), onCard: el("cardA").checked};
+    var B = null;
+    if(compare){
+      B = {label: el("labelB").value || "Purchase B", amount: num("amountB"),
+           freq: parseFloat(el("freqB").value), onCard: el("cardB").checked};
+    }
+
+    var anyCard = (A.onCard && A.freq === 0) || (B && B.onCard && B.freq === 0);
+    el("cardTerms").style.display = (A.onCard || (B && B.onCard)) ? "block" : "none";
+
+    var opts = {apr:num("apr"), minPct:num("minPct"), minFloor:num("minFloor"), fixedPay:num("fixedPay")};
+    var sA = series(A, rate, infl, opts);
+    var sB = B ? series(B, rate, infl, opts) : null;
+
+    var legAmt = legacyOn ? num("legAmt") : 0;
+    var legPer = parseFloat(el("legFreq").value);
+    var legStart = num("legStart"), legEnd = num("legEnd");
+
+    // ---------- credit card panels ----------
+    var cs = el("cardStats");
+    if(anyCard){
+      cs.style.display = "block";
+      var body = "";
+      if(sA.sched) body += cardPanel(A.label, "dotA", sA);
+      if(sB && sB.sched) body += cardPanel(B.label, "dotB", sB);
+      el("cardStatsBody").innerHTML = body;
+    } else { cs.style.display = "none"; }
+
+    // ---------- hero ----------
+    var idx40 = 3;
+    var a40 = sA.rows[idx40];
+    var hero = "";
+    if(compare && sB){
+      var b40 = sB.rows[idx40];
+      var gap = Math.abs(a40.shown - b40.shown);
+      var cheaper = a40.shown <= b40.shown ? A.label : B.label;
+      hero += '<div class="lbl">40-year true cost, side by side</div>';
+      hero += '<div class="versus" style="margin:14px 0 10px">' +
+        '<div><div class="n">' + esc(A.label) + '</div><div class="v va">' + fmt(a40.shown) + '</div></div>' +
+        '<div class="vs">vs</div>' +
+        '<div><div class="n">' + esc(B.label) + '</div><div class="v vb">' + fmt(b40.shown) + '</div></div>' +
+        '</div>';
+      hero += '<div class="cap">Choosing <b>' + esc(cheaper) + '</b> leaves <b style="color:var(--good)">' +
+        fmt(gap) + '</b> more on the table after 40 years — that gap is the real price difference, not the sticker.</div>';
+    } else {
+      hero += '<div class="lbl">Real cost after 40 years</div>';
+      hero += '<div class="big">' + fmt(a40.shown) + '</div>';
+      hero += '<div class="cap">' + (sA.oneTime ? "That " : "Those ") + fmt(A.amount) +
+        (sA.oneTime ? " purchase" : " purchases") + (sA.sched && !sA.sched.never ? " on the card" : "") +
+        " gives up " + fmt(a40.shown) + " of future money — about " + a40.mult.toFixed(1) +
+        "× what you actually handed over (" + fmt(a40.base) + ").</div>";
+    }
+    el("hero").innerHTML = hero;
+
+    // ---------- generation rows ----------
+    var max = 0;
+    sA.rows.forEach(function(r){ if(r.shown > max) max = r.shown; });
+    if(sB) sB.rows.forEach(function(r){ if(r.shown > max) max = r.shown; });
+
+    var html = "";
+    HORIZONS.forEach(function(h, i){
+      var years = h[0];
+      var ra = sA.rows[i], rb = sB ? sB.rows[i] : null;
+      html += '<div class="row">';
+      html += '<div class="yrs">' + years + ' years<small>' + h[1] + '</small></div>';
+
+      [[A, ra, "dotA", "barA"], B ? [B, rb, "dotB", "barB"] : null].forEach(function(pair){
+        if(!pair) return;
+        var p = pair[0], r = pair[1], dot = pair[2], bar = pair[3];
+        var pct = max > 0 ? Math.max(1, (r.shown/max)*100) : 0;
+        html += '<div class="line">';
+        html +=   '<div class="nm"><span class="dot ' + dot + '"></span><b>' + esc(p.label) + '</b></div>';
+        html +=   '<div class="amt">' + fmt(r.shown) + '<small>' + fmt(r.real) + " in today's money</small></div>";
+        html += '</div>';
+        html += '<div class="bar ' + bar + '"><i style="width:' + pct.toFixed(1) + '%"></i></div>';
+        html += '<div class="meta">';
+        html +=   '<span>Out of pocket <b>' + fmt(r.base) + '</b></span>';
+        html +=   '<span>Cost multiple <b>' + r.mult.toFixed(1) + '×</b></span>';
+        if(r.cardFV !== null){
+          html += '<span>Cash instead <b>' + fmt(r.fv) + '</b></span>';
+          html += '<span class="red">Card penalty <b>' + fmt(r.cardFV - r.fv) + '</b></span>';
+        }
+        html += '</div>';
+      });
+
+      if(rb){
+        var d = Math.abs(ra.shown - rb.shown);
+        var win = ra.shown <= rb.shown ? A.label : B.label;
+        html += '<div class="diff">Gap between them: <b>' + fmt(d) + '</b> — kept by whoever picks ' + esc(win) + '.</div>';
+      }
+
+      if(legacyOn && legAmt > 0){
+        var lg = legacyAt(years, rate, legAmt, legPer, legStart, legEnd);
+        if(lg.fv > 0){
+          var pot = ra.shown + lg.fv;
+          html += '<div class="legacy">Family fund if you invest this <i>and</i> keep contributing: <b>' +
+            fmt(pot) + '</b><br>' + fmt(lg.put) + ' of added contributions grew to ' + fmt(lg.fv) +
+            ' — worth ' + fmt(pot / Math.pow(1+infl, years)) + " in today's money.</div>";
+        }
+      }
+
+      html += '</div>';
+    });
+    el("rows").innerHTML = html;
+  }
+
+  ["labelA","amountA","currency","freqA","cardA","useCompare","labelB","amountB","freqB","cardB",
+   "rate","infl","apr","minPct","minFloor","fixedPay",
+   "useLegacy","legAmt","legFreq","legStart","legEnd"].forEach(function(id){
+    var e = el(id);
+    if(!e) return;
+    e.addEventListener("input", render);
+    e.addEventListener("change", render);
+  });
+
+  render();
+})();
