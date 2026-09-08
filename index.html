@@ -3,89 +3,110 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>True Cost Calculator</title>
+<title>True Cost</title>
 <style>
 :root{
-  --bg:#0e1014; --card:#171a21; --line:#272c38; --txt:#e9ecf3;
-  --dim:#8b93a7; --accent:#f5a524; --blue:#60a5fa; --bad:#f87171; --good:#4ade80;
+  --paper:#EFEDE6; --panel:#E6E2D8; --ink:#1F1D18; --ink2:#5F5B52;
+  --rule:#CFCABC; --cost:#8C2F1F; --costB:#2A4E6E; --keep:#2C5A4B;
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --fig:Georgia,"Iowan Old Style","Times New Roman",serif;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--txt);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  line-height:1.45;padding:18px 14px 60px}
-.wrap{max-width:780px;margin:0 auto}
-h1{font-size:24px;margin:0 0 4px;letter-spacing:-.02em}
-.sub{color:var(--dim);font-size:14px;margin:0 0 22px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
-.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim);
-  margin:0 0 14px;font-weight:600;display:flex;align-items:center;gap:8px}
-.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
-.dotA{background:var(--accent)} .dotB{background:var(--blue)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);
+  font-size:15px;line-height:1.5;padding:26px 16px 70px;-webkit-text-size-adjust:100%}
+.wrap{max-width:660px;margin:0 auto}
+h1{font-family:var(--fig);font-size:32px;font-weight:400;letter-spacing:-.01em;margin:0}
+.lede{color:var(--ink2);font-size:14px;margin:6px 0 0;max-width:46em}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  padding-bottom:20px;border-bottom:1px solid var(--rule)}
+button{font-family:var(--ui);font-size:13px;color:var(--ink2);background:none;
+  border:1px solid var(--rule);border-radius:4px;padding:7px 12px;cursor:pointer;white-space:nowrap}
+button:hover{color:var(--ink);border-color:var(--ink2)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--costB);outline-offset:1px}
+section{padding:22px 0;border-bottom:1px solid var(--rule)}
+h2{font-family:var(--fig);font-size:19px;font-weight:400;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+.tag{width:3px;height:17px;background:var(--cost);display:inline-block;border-radius:1px}
+.tagB{background:var(--costB)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .grid.three{grid-template-columns:1fr 1fr 1fr}
-@media(max-width:520px){.grid.three{grid-template-columns:1fr 1fr}}
-label{display:block;font-size:12px;color:var(--dim);margin-bottom:5px}
-input,select{width:100%;background:#0e1014;border:1px solid var(--line);color:var(--txt);
-  border-radius:9px;padding:11px 10px;font-size:16px;font-family:inherit}
-input::placeholder{color:#4c5468}
-input:focus,select:focus{outline:none;border-color:var(--accent)}
+@media(max-width:500px){.grid.three{grid-template-columns:1fr 1fr}}
 .full{grid-column:1/-1}
-.terms{margin-top:14px;padding:13px;background:#0e1014;border:1px solid var(--line);border-radius:11px}
-.terms .th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:11px;font-weight:600}
-.terms input{background:var(--card)}
+label{display:block;font-size:12.5px;color:var(--ink2);margin-bottom:5px}
+input,select{width:100%;background:#FBFAF7;border:1px solid var(--rule);color:var(--ink);
+  border-radius:5px;padding:10px;font-size:16px;font-family:var(--ui)}
+input::placeholder{color:#A5A093}
+input:focus,select:focus{border-color:var(--ink2);outline:none}
+.terms{margin-top:15px;padding:14px;background:var(--panel);border-radius:7px}
+.terms .th{font-size:13px;color:var(--ink2);margin-bottom:12px}
+.terms input{background:#FBFAF7}
 .toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
-.toggle input{width:auto;transform:scale(1.3);margin:0;flex:none}
-.toggle span{font-size:15px;color:var(--txt)}
-.note{font-size:12px;color:var(--dim);margin-top:10px}
-.hero{text-align:center;padding:8px 0 4px}
-.hero .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--dim)}
-.hero .big{font-size:38px;font-weight:700;letter-spacing:-.03em;color:var(--accent);margin:6px 0 2px;line-height:1.05}
-.hero .kicker{font-size:15px;color:var(--good);font-weight:600;margin:8px 0 10px;max-width:520px;margin-left:auto;margin-right:auto}
-.hero .cap{font-size:13px;color:var(--dim);max-width:520px;margin:0 auto}
-.hero .empty{font-size:15px;color:var(--dim);padding:18px 6px}
-.versus{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}
-.versus .vs{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
-.versus .n{font-size:12px;color:var(--dim);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.versus .v{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
-.va{color:var(--accent)} .vb{color:var(--blue)}
-.row{padding:14px 0;border-top:1px solid var(--line)}
-.row:first-of-type{border-top:none}
-.yrs{font-size:15px;font-weight:600;margin-bottom:9px}
-.yrs small{font-weight:400;font-size:12px;color:var(--dim);margin-left:7px}
-.line{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:7px}
-.line .nm{font-size:13px;color:var(--dim);display:flex;align-items:center;gap:7px;min-width:0}
-.line .nm b{color:var(--txt);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.line .amt{font-size:19px;font-weight:700;letter-spacing:-.02em;text-align:right;white-space:nowrap}
-.line .amt small{display:block;font-size:11px;font-weight:400;color:var(--dim);letter-spacing:0}
-.bar{height:6px;background:#0e1014;border-radius:4px;margin-top:6px;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:4px}
-.barA i{background:linear-gradient(90deg,#f5a524,#f87171)}
-.barB i{background:linear-gradient(90deg,#60a5fa,#a78bfa)}
-.meta{display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:8px;font-size:12px;color:var(--dim)}
-.meta b{color:var(--txt);font-weight:600}
-.diff{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);font-size:13px;color:var(--dim)}
-.diff b{color:var(--good);font-weight:700}
-.legacy{margin-top:11px;padding:10px;background:#0e1014;border:1px solid var(--line);border-radius:9px;font-size:13px;color:var(--dim)}
-.legacy b{color:var(--good);font-weight:700;font-size:16px}
-.pill{display:inline-block;background:#0e1014;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font-size:11px;color:var(--dim)}
-.warn{background:#2a1a1a;border:1px solid #5a2a2a;color:#ffb4b4;font-size:13px;padding:11px;border-radius:9px;margin-top:12px}
-.stat{background:#0e1014;border:1px solid var(--line);border-radius:10px;padding:11px}
-.stat .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
-.stat .v{font-size:18px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
-.sechead{font-size:12px;color:var(--dim);margin:14px 0 8px;display:flex;align-items:center;gap:7px}
-.sechead:first-child{margin-top:0}
-.red{color:var(--bad)} .green{color:var(--good)}
-footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
+.toggle input{width:auto;flex:none;transform:scale(1.25);margin:0;accent-color:var(--cost)}
+.note{font-size:12.5px;color:var(--ink2);margin:11px 0 0;max-width:46em}
+
+.hero{padding:30px 0 26px;border-bottom:1px solid var(--rule)}
+.hero .lbl{font-size:13px;color:var(--ink2)}
+.hero .fig{font-family:var(--fig);font-size:52px;line-height:1.05;letter-spacing:-.025em;
+  color:var(--cost);margin:8px 0 0;font-variant-numeric:tabular-nums}
+.hero .say{font-family:var(--fig);font-size:19px;line-height:1.4;color:var(--keep);
+  margin:14px 0 0;max-width:26em}
+.hero .cap{font-size:13px;color:var(--ink2);margin:10px 0 0;max-width:34em}
+.hero .empty{font-family:var(--fig);font-size:20px;color:var(--ink2);margin:0}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px}
+.duo .n{font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.duo .f{font-family:var(--fig);font-size:34px;line-height:1.1;letter-spacing:-.02em;
+  margin-top:3px;font-variant-numeric:tabular-nums}
+.fA{color:var(--cost)} .fB{color:var(--costB)}
+
+.row{padding:20px 0;border-bottom:1px solid var(--rule)}
+.row:last-child{border-bottom:none;padding-bottom:0}
+.rowhead{display:flex;align-items:baseline;gap:9px;margin-bottom:13px}
+.decade{font-family:var(--fig);font-size:17px}
+.when{font-size:13px;color:var(--ink2)}
+.entry{border-left:3px solid var(--cost);padding-left:13px;margin-bottom:16px}
+.entry:last-child{margin-bottom:0}
+.entryB{border-left-color:var(--costB)}
+.etop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.ename{min-width:0}
+.ename b{display:block;font-weight:600;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ename span{display:block;font-size:12.5px;color:var(--ink2);margin-top:1px}
+.eamt{text-align:right;white-space:nowrap}
+.eamt b{display:block;font-family:var(--fig);font-size:25px;font-weight:400;
+  letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.eamt span{display:block;font-size:12px;color:var(--ink2);margin-top:2px}
+.bar{height:3px;background:var(--rule);margin-top:11px;overflow:hidden;border-radius:2px}
+.bar i{display:block;height:100%;background:var(--cost)}
+.entryB .bar i{background:var(--costB)}
+.meta{display:flex;flex-wrap:wrap;gap:3px 18px;margin-top:9px;font-size:12.5px;color:var(--ink2)}
+.meta b{color:var(--ink);font-weight:600}
+.gap{font-size:13px;color:var(--ink2);padding-top:12px;border-top:1px dotted var(--rule)}
+.gap b{color:var(--keep);font-weight:700}
+.legacy{margin-top:13px;padding:12px;background:var(--panel);border-radius:7px;font-size:13px;color:var(--ink2)}
+.legacy b{font-family:var(--fig);font-size:19px;color:var(--keep);font-weight:400}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:4px}
+@media(min-width:520px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--panel);border-radius:7px;padding:11px}
+.stat .k{font-size:12px;color:var(--ink2)}
+.stat .v{font-family:var(--fig);font-size:19px;margin-top:3px;font-variant-numeric:tabular-nums}
+.subhead{font-size:13.5px;color:var(--ink2);margin:18px 0 9px;display:flex;align-items:center;gap:8px}
+.subhead:first-child{margin-top:0}
+.warn{background:#F3DED9;color:#6E2416;font-size:13px;padding:11px;border-radius:7px;margin-top:11px}
+.cost{color:var(--cost)} .keep{color:var(--keep)}
+footer{font-size:12.5px;color:var(--ink2);padding-top:20px;line-height:1.6;max-width:46em}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <h1>What This Purchase Really Costs</h1>
-  <p class="sub">Money spent isn't just gone — it's the growth you never got. Compare two choices, add the financing, and follow it down to the grandkids.</p>
+  <header>
+    <div>
+      <h1>True Cost</h1>
+      <p class="lede">What a purchase costs isn't the price. It's the price plus everything that money would have become.</p>
+    </div>
+    <button id="clearBtn" type="button">Clear all</button>
+  </header>
 
-  <div class="card">
-    <h2>About You</h2>
+  <section>
+    <h2>About you</h2>
     <div class="grid">
       <div>
         <label>Your age today (optional)</label>
@@ -104,11 +125,11 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
         </select>
       </div>
     </div>
-    <p class="note">Add your age and every milestone below shows how old you'd be when that money would have been waiting for you.</p>
-  </div>
+    <p class="note">Add your age and every milestone shows how old you'd be when that money would have been waiting for you.</p>
+  </section>
 
-  <div class="card">
-    <h2><span class="dot dotA"></span>Purchase A</h2>
+  <section>
+    <h2><span class="tag"></span>First purchase</h2>
     <div class="grid">
       <div class="full">
         <label>Name it</label>
@@ -122,9 +143,9 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
         <label>How often?</label>
         <select id="freqA">
           <option value="0">One time only</option>
-          <option value="365">Every day (coffee, lunch)</option>
+          <option value="365">Every day</option>
           <option value="52">Every week</option>
-          <option value="12">Every month (subscription, payment)</option>
+          <option value="12">Every month</option>
           <option value="1">Every year</option>
         </select>
       </div>
@@ -137,18 +158,16 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
         </select>
       </div>
     </div>
-
     <div class="terms" id="loanTermsA" style="display:none">
-      <div class="th">Loan terms — Purchase A</div>
+      <div class="th">Loan terms</div>
       <div class="grid three">
         <div><label>APR %</label><input id="loanAprA" type="number" value="7.5" step="any" inputmode="decimal"></div>
         <div><label>Term (months)</label><input id="loanTermMoA" type="number" value="72" step="1" inputmode="numeric"></div>
         <div><label>Down payment</label><input id="downA" type="number" value="0" step="any" inputmode="decimal"></div>
       </div>
     </div>
-
     <div class="terms" id="cardTermsA" style="display:none">
-      <div class="th">Card terms — Purchase A</div>
+      <div class="th">Card terms</div>
       <div class="grid three">
         <div><label>APR %</label><input id="aprA" type="number" value="24.99" step="any" inputmode="decimal"></div>
         <div><label>Min payment %</label><input id="minPctA" type="number" value="2" step="any" inputmode="decimal"></div>
@@ -156,12 +175,12 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
         <div class="full"><label>Or a fixed monthly payment (0 = minimum only)</label><input id="fixedPayA" type="number" value="0" step="any" inputmode="decimal"></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
+  <section>
     <label class="toggle"><input id="useCompare" type="checkbox"><span>Compare against a second choice</span></label>
-    <div id="bWrap" style="display:none;margin-top:16px">
-      <h2><span class="dot dotB"></span>Purchase B</h2>
+    <div id="bWrap" style="display:none;margin-top:18px">
+      <h2><span class="tag tagB"></span>Second purchase</h2>
       <div class="grid">
         <div class="full">
           <label>Name it</label>
@@ -175,9 +194,9 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
           <label>How often?</label>
           <select id="freqB">
             <option value="0">One time only</option>
-            <option value="365">Every day (coffee, lunch)</option>
+            <option value="365">Every day</option>
             <option value="52">Every week</option>
-            <option value="12">Every month (subscription, payment)</option>
+            <option value="12">Every month</option>
             <option value="1">Every year</option>
           </select>
         </div>
@@ -190,18 +209,16 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
           </select>
         </div>
       </div>
-
       <div class="terms" id="loanTermsB" style="display:none">
-        <div class="th">Loan terms — Purchase B</div>
+        <div class="th">Loan terms</div>
         <div class="grid three">
           <div><label>APR %</label><input id="loanAprB" type="number" value="9.5" step="any" inputmode="decimal"></div>
           <div><label>Term (months)</label><input id="loanTermMoB" type="number" value="48" step="1" inputmode="numeric"></div>
           <div><label>Down payment</label><input id="downB" type="number" value="0" step="any" inputmode="decimal"></div>
         </div>
       </div>
-
       <div class="terms" id="cardTermsB" style="display:none">
-        <div class="th">Card terms — Purchase B</div>
+        <div class="th">Card terms</div>
         <div class="grid three">
           <div><label>APR %</label><input id="aprB" type="number" value="24.99" step="any" inputmode="decimal"></div>
           <div><label>Min payment %</label><input id="minPctB" type="number" value="2" step="any" inputmode="decimal"></div>
@@ -210,20 +227,20 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>Investment Assumptions</h2>
+  <section>
+    <h2>What the money would earn</h2>
     <div class="grid">
       <div><label>Annual return %</label><input id="rate" type="number" value="8" step="any" inputmode="decimal"></div>
       <div><label>Inflation %</label><input id="infl" type="number" value="3" step="any" inputmode="decimal"></div>
     </div>
     <p class="note">8% is a common long-run stock-market average before inflation. Inflation converts the result back into today's buying power. Financing applies to one-time purchases only.</p>
-  </div>
+  </section>
 
-  <div class="card">
+  <section>
     <label class="toggle"><input id="useLegacy" type="checkbox"><span>The family keeps feeding the fund</span></label>
-    <div id="legacyFields" style="display:none;margin-top:16px">
+    <div id="legacyFields" style="display:none;margin-top:18px">
       <div class="grid">
         <div><label>Contribution</label><input id="legAmt" type="number" value="0" min="0" step="any" inputmode="decimal"></div>
         <div>
@@ -233,25 +250,24 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
         <div><label>Starts in year</label><input id="legStart" type="number" value="0" min="0" step="1" inputmode="numeric"></div>
         <div><label>Stops in year</label><input id="legEnd" type="number" value="100" min="0" step="1" inputmode="numeric"></div>
       </div>
-      <p class="note">Money never spent is only half the picture. This shows what the pot becomes if you — then your kids, then theirs — keep adding to it instead of starting over each generation.</p>
+      <p class="note">Money never spent is only half the picture. This shows what the pot becomes if you — then your children, then theirs — keep adding to it instead of starting over each generation.</p>
     </div>
-  </div>
+  </section>
 
-  <div class="card"><div class="hero" id="hero"></div></div>
+  <div class="hero" id="hero"></div>
 
-  <div class="card" id="finStats" style="display:none">
-    <h2>The Cost Of Financing It</h2>
+  <section id="finStats" style="display:none">
+    <h2>What the financing costs</h2>
     <div id="finStatsBody"></div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>Across The Generations</h2>
+  <section style="border-bottom:none">
+    <h2>Across the generations</h2>
     <div id="rows"></div>
-  </div>
+  </section>
 
   <footer>
-    <span class="pill">Estimates only</span>
-    Growth is compounded at the rate you enter, with no taxes, fees, or market swings factored in. Loan figures assume a standard amortized payment with no fees or trade-in. Real life is messier than any spreadsheet — this is a thinking tool, not financial advice.
+    Estimates only. Growth is compounded at the rate you enter, with no taxes, fees, or market swings factored in. Loan figures assume a standard amortized payment with no fees or trade-in. Real life is messier than any spreadsheet — this is a thinking tool, not financial advice.
   </footer>
 
 </div>
@@ -286,7 +302,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     });
   }
 
-  function horizonNote(years, desc, age){
+  function whenNote(years, desc, age){
     if(age > 0){
       var a = age + years;
       if(a <= 95) return "you'd be " + a;
@@ -387,27 +403,27 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     return {fv:fv, put:put};
   }
 
-  function finPanel(name, dotClass, s){
-    var h = '<div class="sechead"><span class="dot '+dotClass+'"></span>'+esc(name)+
-            ' &middot; '+(s.sched.kind === "loan" ? "loan" : "credit card")+'</div>';
+  function finPanel(name, tagB, s){
+    var h = '<div class="subhead"><span class="tag'+(tagB?" tagB":"")+'"></span>'+esc(name)+
+            ' &mdash; '+(s.sched.kind === "loan" ? "loan" : "credit card")+'</div>';
     if(s.sched.never){
-      return h + '<div class="warn">At this payment level you would never pay it off — the minimum payment is smaller than the monthly interest, so the balance only grows.</div>';
+      return h + '<div class="warn">At this payment level you would never pay it off. The minimum payment is smaller than the monthly interest, so the balance only grows.</div>';
     }
     var yrs = Math.floor(s.sched.months/12), mos = s.sched.months % 12;
-    h += '<div class="grid three">'+
+    h += '<div class="stats">'+
       '<div class="stat"><div class="k">Monthly payment</div><div class="v">'+fmt(s.sched.monthly)+'</div></div>'+
       '<div class="stat"><div class="k">Time to pay off</div><div class="v">'+yrs+'y '+mos+'m</div></div>'+
-      '<div class="stat"><div class="k">Interest paid</div><div class="v red">'+fmt(s.sched.interest)+'</div></div>'+
+      '<div class="stat"><div class="k">Interest paid</div><div class="v cost">'+fmt(s.sched.interest)+'</div></div>'+
       '<div class="stat"><div class="k">Total handed over</div><div class="v">'+fmt(s.sched.totalPaid)+'</div></div>'+
       '</div>';
     if(s.sched.hitCap) h += '<div class="warn">Payoff takes longer than 100 years at this payment level.</div>';
     return h;
   }
 
-  function readPurchase(sfx){
+  function readPurchase(sfx, fallback){
     var nm = el("label"+sfx).value.trim();
     return {
-      label: nm || ("Purchase "+sfx),
+      label: nm || fallback,
       amount: num("amount"+sfx),
       freq: parseFloat(el("freq"+sfx).value),
       method: el("method"+sfx).value,
@@ -436,8 +452,8 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     toggleTerms("A");
     if(compare) toggleTerms("B");
 
-    var A = readPurchase("A");
-    var B = compare ? readPurchase("B") : null;
+    var A = readPurchase("A", "First purchase");
+    var B = compare ? readPurchase("B", "Second purchase") : null;
     var sA = series(A, rate, infl);
     var sB = B ? series(B, rate, infl) : null;
 
@@ -446,44 +462,43 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     var legStart = num("legStart"), legEnd = num("legEnd");
 
     var fs = el("finStats");
-    if((sA.sched) || (sB && sB.sched)){
+    if(sA.sched || (sB && sB.sched)){
       fs.style.display = "block";
       var body = "";
-      if(sA.sched) body += finPanel(A.label, "dotA", sA);
-      if(sB && sB.sched) body += finPanel(B.label, "dotB", sB);
+      if(sA.sched) body += finPanel(A.label, false, sA);
+      if(sB && sB.sched) body += finPanel(B.label, true, sB);
       el("finStatsBody").innerHTML = body;
     } else { fs.style.display = "none"; }
 
     var a40 = sA.rows[3];
-    var atAge = (age > 0 && age + 40 <= 110) ? (" — you'd be " + (age + 40)) : "";
+    var haveAge = (age > 0 && age + 40 <= 110);
     var hero = "";
 
     if(A.amount <= 0 && (!B || B.amount <= 0)){
-      hero = '<div class="empty">Enter an amount above and the true cost appears here.</div>';
+      hero = '<p class="empty">Enter an amount above to see what it really costs.</p>';
     } else if(compare && sB){
       var b40 = sB.rows[3];
       var gap = Math.abs(a40.shown - b40.shown);
       var cheaper = a40.shown <= b40.shown ? A.label : B.label;
-      hero += '<div class="lbl">40-year true cost, side by side'+atAge+'</div>';
-      hero += '<div class="versus" style="margin:14px 0 10px">'+
-        '<div><div class="n">'+esc(A.label)+'</div><div class="v va">'+fmt(a40.shown)+'</div></div>'+
-        '<div class="vs">vs</div>'+
-        '<div><div class="n">'+esc(B.label)+'</div><div class="v vb">'+fmt(b40.shown)+'</div></div>'+
+      hero += '<div class="lbl">True cost after 40 years'+(haveAge?", when you'd be "+(age+40):"")+'</div>';
+      hero += '<div class="duo">'+
+        '<div><div class="n">'+esc(A.label)+'</div><div class="f fA">'+fmt(a40.shown)+'</div></div>'+
+        '<div><div class="n">'+esc(B.label)+'</div><div class="f fB">'+fmt(b40.shown)+'</div></div>'+
         '</div>';
-      hero += '<div class="kicker">This is what each choice takes off your table. Picking '+
-        esc(cheaper)+' leaves '+fmt(gap)+' more of it standing.</div>';
-      hero += '<div class="cap">That gap is the real price difference between them — not the sticker.</div>';
+      hero += '<p class="say">This is what each choice takes off your table. Picking '+
+        esc(cheaper)+' leaves '+fmt(gap)+' more of it standing.</p>';
+      hero += '<p class="cap">That gap is the real difference between them, not the sticker price.</p>';
     } else {
-      hero += '<div class="lbl">Real cost after 40 years'+atAge+'</div>';
-      hero += '<div class="big">'+fmt(a40.shown)+'</div>';
-      hero += '<div class="kicker">This is what you would have instead' +
-        (age > 0 && age + 40 <= 110 ? ' by age ' + (age + 40) : ' in 40 years') +
-        ' if you don\u2019t make this purchase.</div>';
-      hero += '<div class="cap">'+(sA.oneTime ? "That " : "Those ")+fmt(A.amount)+
+      hero += '<div class="lbl">True cost of '+esc(A.label)+' after 40 years'+
+        (haveAge?", when you'd be "+(age+40):"")+'</div>';
+      hero += '<div class="fig">'+fmt(a40.shown)+'</div>';
+      hero += '<p class="say">This is what you would have instead'+
+        (haveAge?' by age '+(age+40):' in 40 years')+' if you don\u2019t make this purchase.</p>';
+      hero += '<p class="cap">'+(sA.oneTime ? "That " : "Those ")+fmt(A.amount)+
         (sA.oneTime ? " purchase" : " purchases")+
-        (sA.sched && !sA.sched.never ? (sA.sched.kind === "loan" ? " financed" : " on the card") : "")+
+        (sA.sched && !sA.sched.never ? (sA.sched.kind === "loan" ? ", financed," : ", on the card,") : "")+
         " costs about "+a40.mult.toFixed(1)+
-        "\u00d7 what you actually hand over ("+fmt(a40.base)+").</div>";
+        "\u00d7 what you actually hand over ("+fmt(a40.base)+").</p>";
     }
     el("hero").innerHTML = hero;
 
@@ -495,34 +510,36 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     HORIZONS.forEach(function(h,i){
       var ra = sA.rows[i], rb = sB ? sB.rows[i] : null;
       html += '<div class="row">';
-      html += '<div class="yrs">'+h[0]+' years<small>'+horizonNote(h[0], h[1], age)+'</small></div>';
+      html += '<div class="rowhead"><span class="decade">'+h[0]+' years</span>'+
+              '<span class="when">'+whenNote(h[0], h[1], age)+'</span></div>';
 
-      [[A,ra,"dotA","barA"], B ? [B,rb,"dotB","barB"] : null].forEach(function(pair){
+      [[A,ra,false], B ? [B,rb,true] : null].forEach(function(pair){
         if(!pair) return;
-        var p = pair[0], r = pair[1], dot = pair[2], bar = pair[3];
+        var p = pair[0], r = pair[1], isB = pair[2];
         var pct = max > 0 ? Math.max(1,(r.shown/max)*100) : 0;
-        html += '<div class="line">'+
-          '<div class="nm"><span class="dot '+dot+'"></span><b>'+esc(p.label)+'</b></div>'+
-          '<div class="amt">'+fmt(r.shown)+'<small>'+fmt(r.real)+" in today's money</small></div>"+
+        html += '<div class="entry'+(isB?" entryB":"")+'">';
+        html += '<div class="etop">'+
+          '<div class="ename"><b>'+esc(p.label)+'</b><span>true cost</span></div>'+
+          '<div class="eamt"><b>'+fmt(r.shown)+'</b><span>'+fmt(r.real)+" in today's money</span></div>"+
           '</div>';
-        html += '<div class="bar '+bar+'"><i style="width:'+pct.toFixed(1)+'%"></i></div>';
+        html += '<div class="bar"><i style="width:'+pct.toFixed(1)+'%"></i></div>';
         html += '<div class="meta">'+
           '<span>Out of pocket <b>'+fmt(r.base)+'</b></span>'+
           '<span>Cost multiple <b>'+r.mult.toFixed(1)+'\u00d7</b></span>';
         if(r.finFV !== null){
           var pen = r.finFV - r.fv;
           html += '<span>Cost if paid cash <b>'+fmt(r.fv)+'</b></span>'+
-                  '<span class="'+(pen>=0?'red':'green')+'">'+
-                  (pen>=0?'Financing penalty':'Financing advantage')+
+                  '<span class="'+(pen>=0?"cost":"keep")+'">'+
+                  (pen>=0?"Financing penalty":"Financing advantage")+
                   ' <b>'+fmt(Math.abs(pen))+'</b></span>';
         }
-        html += '</div>';
+        html += '</div></div>';
       });
 
       if(rb){
         var d = Math.abs(ra.shown - rb.shown);
         var win = ra.shown <= rb.shown ? A.label : B.label;
-        html += '<div class="diff">Gap between them: <b>'+fmt(d)+'</b> — kept by whoever picks '+esc(win)+'.</div>';
+        html += '<div class="gap">Gap between them: <b>'+fmt(d)+'</b>, kept by whoever picks '+esc(win)+'.</div>';
       }
 
       if(legacyOn && legAmt > 0){
@@ -531,7 +548,7 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
           var pot = ra.shown + lg.fv;
           html += '<div class="legacy">Family fund if you invest this <i>and</i> keep contributing: <b>'+
             fmt(pot)+'</b><br>'+fmt(lg.put)+' of added contributions grew to '+fmt(lg.fv)+
-            ' — worth '+fmt(pot/Math.pow(1+infl,h[0]))+" in today's money.</div>";
+            ', worth '+fmt(pot/Math.pow(1+infl,h[0]))+" in today's money.</div>";
         }
       }
       html += '</div>';
@@ -539,15 +556,30 @@ footer{font-size:12px;color:var(--dim);margin-top:22px;line-height:1.6}
     el("rows").innerHTML = html;
   }
 
-  ["age","labelA","amountA","currency","freqA","methodA","loanAprA","loanTermMoA","downA",
+  var IDS = ["age","labelA","amountA","currency","freqA","methodA","loanAprA","loanTermMoA","downA",
    "aprA","minPctA","minFloorA","fixedPayA",
    "useCompare","labelB","amountB","freqB","methodB","loanAprB","loanTermMoB","downB",
    "aprB","minPctB","minFloorB","fixedPayB",
-   "rate","infl","useLegacy","legAmt","legFreq","legStart","legEnd"].forEach(function(id){
+   "rate","infl","useLegacy","legAmt","legFreq","legStart","legEnd"];
+
+  var DEFAULTS = {};
+  IDS.forEach(function(id){
     var e = el(id);
     if(!e) return;
+    DEFAULTS[id] = (e.type === "checkbox") ? e.checked : e.value;
     e.addEventListener("input", render);
     e.addEventListener("change", render);
+  });
+
+  el("clearBtn").addEventListener("click", function(){
+    IDS.forEach(function(id){
+      var e = el(id);
+      if(!e) return;
+      if(e.type === "checkbox") e.checked = DEFAULTS[id];
+      else e.value = DEFAULTS[id];
+    });
+    render();
+    window.scrollTo({top:0, behavior:"smooth"});
   });
 
   render();
